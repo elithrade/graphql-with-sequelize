@@ -6,8 +6,7 @@ import Faker from 'faker'
 const Conn = new Sequelize(
   'hub',
   'postgres',
-  'postgres',
-  {
+  'postgres', {
     dialect: 'postgres',
     host: 'localhost'
   }

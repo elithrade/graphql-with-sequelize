@@ -3,7 +3,7 @@ import _ from 'lodash'
 import Faker from 'faker'
 
 // Create connection
-const Conn = new Sequelize(
+const Seq = new Sequelize(
   'hub',
   'postgres',
   'postgres', {
@@ -13,8 +13,12 @@ const Conn = new Sequelize(
 )
 
 // Define tables
-const Person = Conn.define('person', {
+const Person = Seq.define('person', {
   firstName: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  lastName: {
     type: Sequelize.STRING,
     allowNull: false
   },
@@ -27,7 +31,7 @@ const Person = Conn.define('person', {
   }
 })
 
-const Post = Conn.define('post', {
+const Post = Seq.define('post', {
   title: {
     type: Sequelize.STRING,
     allowNull: false
@@ -42,15 +46,20 @@ const Post = Conn.define('post', {
 Person.hasMany(Post)
 Post.belongsTo(Person)
 
-Conn.sync({ force: true }).then(() => {
+Seq.sync({ force: true }).then(() => {
   // Returns promise
   _.times(10, () => {
     return Person.create({
       firstName: Faker.name.firstName(),
       lastName: Faker.name.lastName(),
       email: Faker.internet.email()
+    }).then(person => {
+      return person.createPost({
+        title: `Sample post by ${person.firstName}`,
+        content: `here is some content`
+      })
     })
   })
 })
 
-export default Conn
+export default Seq

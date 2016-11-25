@@ -1,29 +1,29 @@
-import Sequelize from 'sequelize'
+import Connection from 'sequelize'
 import _ from 'lodash'
 import Faker from 'faker'
 
 // Create connection
-const Seq = new Sequelize(
-  'hub',
-  'postgres',
-  'postgres', {
-    dialect: 'postgres',
-    host: 'localhost'
+const Db = new Connection(
+  'graphql',
+  'root',
+  '', {
+    dialect: 'mysql',
+    port: 3306
   }
 )
 
 // Define tables
-const Person = Seq.define('person', {
+const Person = Db.define('person', {
   firstName: {
-    type: Sequelize.STRING,
+    type: Connection.STRING,
     allowNull: false
   },
   lastName: {
-    type: Sequelize.STRING,
+    type: Connection.STRING,
     allowNull: false
   },
   email: {
-    type: Sequelize.STRING,
+    type: Connection.STRING,
     allowNull: false,
     validate: {
       isEmail: true
@@ -31,13 +31,13 @@ const Person = Seq.define('person', {
   }
 })
 
-const Post = Seq.define('post', {
+const Post = Db.define('post', {
   title: {
-    type: Sequelize.STRING,
+    type: Connection.STRING,
     allowNull: false
   },
   content: {
-    type: Sequelize.STRING,
+    type: Connection.STRING,
     allowNull: false
   }
 })
@@ -46,7 +46,7 @@ const Post = Seq.define('post', {
 Person.hasMany(Post)
 Post.belongsTo(Person)
 
-Seq.sync({ force: true }).then(() => {
+Db.sync({ force: true }).then(() => {
   // Returns promise
   _.times(10, () => {
     return Person.create({
@@ -62,4 +62,4 @@ Seq.sync({ force: true }).then(() => {
   })
 })
 
-export default Seq
+export default Db
